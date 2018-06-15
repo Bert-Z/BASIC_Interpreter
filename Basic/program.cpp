@@ -73,11 +73,11 @@ int Program::getFirstLineNumber()
 
 int Program::getNextLineNumber(int lineNumber)
 {
-
     // Replace this stub with your own code
-    auto it = Soureline.lower_bound(lineNumber);
-    if (it == Soureline.end())
-        return -1;
-    else
+    int nextnum = Soureline.upper_bound(lineNumber)->first;
+
+    if (nextnum != Soureline.end()->first)
         return Soureline.upper_bound(lineNumber)->first;
+    else
+        return Soureline.begin()->first;
 }

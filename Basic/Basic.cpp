@@ -46,6 +46,11 @@ int main()
                 lines.push_back(line);
                 getline(cin, line);
             }
+            for (auto it : lines)
+            {
+                getProgram(it, program);
+            }
+
 
             if (line == "QUIT")
                 return 0;
@@ -59,7 +64,7 @@ int main()
                 int First = program.getFirstLineNumber();
                 cout << First << " " << program.getSourceLine(First) << endl;
                 int thisnum = program.getNextLineNumber(First);
-                while (thisnum != -1)
+                while (thisnum != First)
                 {
                     cout << thisnum << " " << program.getSourceLine(thisnum) << endl;
 
@@ -70,14 +75,9 @@ int main()
             {
                 cout << "Yet another basic interpreter." << endl;
             }
-            if (line == "RUN")
-            {
-                for (auto it : lines)
-                {
-                    getProgram(it, program);
-                    // processLine(it, program, state);
-                }
-            }
+            // if (line == "RUN")
+            // {
+            // }
         }
         catch (ErrorException &ex)
         {

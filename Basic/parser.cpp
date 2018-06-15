@@ -121,5 +121,6 @@ void parseProgram(string line, TokenScanner &scanner, Program &program)
     }
     else
     {
+        cout << "SYNTAX ERROR" << endl;
     }
 }

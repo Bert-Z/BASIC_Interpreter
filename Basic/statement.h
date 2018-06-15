@@ -25,20 +25,20 @@
  * BASIC interpreter.
  */
 
-class Statement {
+class Statement
+{
 
 public:
-
-/*
+  /*
  * Constructor: Statement
  * ----------------------
  * The base class constructor is empty.  Each subclass must provide
  * its own constructor.
  */
 
-   Statement();
+  Statement();
 
-/*
+  /*
  * Destructor: ~Statement
  * Usage: delete stmt;
  * -------------------
@@ -47,9 +47,9 @@ public:
  * destructor is called when deleting a statement.
  */
 
-   virtual ~Statement();
+  virtual ~Statement();
 
-/*
+  /*
  * Method: execute
  * Usage: stmt->execute(state);
  * ----------------------------
@@ -60,8 +60,7 @@ public:
  * controlling the operation of the interpreter.
  */
 
-   virtual void execute(EvalState & state) = 0;
-
+  virtual void execute(EvalState &state) = 0;
 };
 
 /*
@@ -74,5 +73,44 @@ public:
  * an Expression object), the class implementation must also
  * specify its own destructor method to free that memory.
  */
+
+class SStatement : public Statement
+{
+public:
+  SStatement(string sstype);
+  ~SStatement();
+  virtual void execute(EvalState &state);
+
+  string getSstype();
+  string getVar();
+  Expression *getNEXP();
+
+private:
+  string sstype;
+  string variable;
+  Expression *nexp;
+};
+
+class CStatement : public Statement
+{
+public:
+  CStatement();
+  ~CStatement();
+  virtual void execute(EvalState &state);
+
+  Expression *getLEXP();
+  Expression *getREXP();
+  string getCMP();
+  bool compare();
+  int getLinenum();
+  string getCstype();
+
+private:
+  string cstype;
+  int lineNumber;
+  string cmp;
+  Expression *lexp;
+  Expression *rexp;
+};
 
 #endif

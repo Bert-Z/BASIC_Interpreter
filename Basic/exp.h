@@ -10,6 +10,10 @@
 #define _exp_h
 
 #include "evalstate.h"
+#include <map>
+using namespace std;
+
+map<string, int> varmap;
 
 /*
  * Type: ExpressionType

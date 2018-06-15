@@ -8,15 +8,15 @@
  * [TODO: extend and correct the documentation]
  */
 
+#include "../StanfordCPPLib/error.h"
+#include "../StanfordCPPLib/tokenscanner.h"
+#include "exp.h"
+#include "parser.h"
+#include "program.h"
 #include <cctype>
 #include <iostream>
 #include <string>
 #include <vector>
-#include "exp.h"
-#include "parser.h"
-#include "program.h"
-#include "../StanfordCPPLib/error.h"
-#include "../StanfordCPPLib/tokenscanner.h"
 
 #include "../StanfordCPPLib/simpio.h"
 #include "../StanfordCPPLib/strlib.h"
@@ -25,36 +25,66 @@ using namespace std;
 /* Function prototypes */
 
 vector<string> lines;
-void processLine(string line, Program & program, EvalState & state);
-
+void processLine(string line, Program &program, EvalState &state);
+void getProgram(string line, Program &program);
 /* Main program */
 
-int main() {
-   EvalState state;
-   Program program;
-   bool flag=false;
-   cout << "Stub implementation of BASIC" << endl;
-   while (true) {
-      try {
-          string line;
-          getline(cin,line);
-          while(line!="RUN"){
-              lines.push_back(line);
+int main()
+{
+    EvalState state;
+    Program program;
 
-              if(line=="QUIT"){flag=true;break;}
+    cout << "Stub implementation of BASIC" << endl;
+    while (true)
+    {
+        try
+        {
+            string line;
+            getline(cin, line);
+            while (line != "RUN" && line != "QUIT" && line != "CLEAR" && line != "LIST" && line != "HELP")
+            {
+                lines.push_back(line);
+                getline(cin, line);
+            }
 
-              getline(cin,line);
-          }
-          if(flag) return 0;
-          for(auto it :lines){
-            processLine(it, program, state);
-          }
-          
-      } catch (ErrorException & ex) {
-         cerr << "Error: " << ex.getMessage() << endl;
-      }
-   }
-   return 0;
+            if (line == "QUIT")
+                return 0;
+            if (line == "CLEAR")
+            {
+                lines.clear();
+                program.clear();
+            }
+            if (line == "LIST")
+            {
+                int First = program.getFirstLineNumber();
+                cout << First << " " << program.getSourceLine(First) << endl;
+                int thisnum = program.getNextLineNumber(First);
+                while (thisnum != -1)
+                {
+                    cout << thisnum << " " << program.getSourceLine(thisnum) << endl;
+
+                    thisnum = program.getNextLineNumber(thisnum);
+                }
+            }
+            if (line == "HELP")
+            {
+                cout << "Yet another basic interpreter." << endl;
+            }
+            if (line == "RUN")
+            {
+                for (auto it : lines)
+                {
+                    getProgram(it, program);
+                    // processLine(it, program, state);
+                }
+            }
+        }
+        catch (ErrorException &ex)
+        {
+            cerr << "Error: " << ex.getMessage() << endl;
+        }
+    }
+    return 0;
 }
 
 /*
@@ -70,17 +100,24 @@ int main() {
  * or one of the BASIC commands, such as LIST or RUN.
  */
 
-void processLine(string line, Program & program, EvalState & state) {
+void processLine(string line, Program &program, EvalState &state)
+{
+    TokenScanner scanner;
+    scanner.ignoreWhitespace();
+    scanner.scanNumbers();
+    scanner.setInput(line);
 
+    Expression *exp = parseExp(scanner);
+    int value = exp->eval(state);
+    cout << value << endl;
+    delete exp;
+}
 
-
-
-   TokenScanner scanner;
-   scanner.ignoreWhitespace();
-   scanner.scanNumbers();
-   scanner.setInput(line);
-   Expression *exp = parseExp(scanner);
-   int value = exp->eval(state);
-   cout << value << endl;
-   delete exp;
+void getProgram(string line, Program &program)
+{
+    TokenScanner scanner;
+    scanner.ignoreWhitespace();
+    scanner.scanNumbers();
+    scanner.setInput(line);
+    parseProgram(line, scanner, program);
 }

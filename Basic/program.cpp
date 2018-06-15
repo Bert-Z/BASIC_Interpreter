@@ -8,47 +8,76 @@
  * the performance guarantees specified in the assignment.
  */
 
-#include <string>
 #include "program.h"
 #include "statement.h"
+#include <string>
 using namespace std;
 
-Program::Program() {
-   // Replace this stub with your own code
+Program::Program()
+{
+    // Replace this stub with your own code
 }
 
-Program::~Program() {
-   // Replace this stub with your own code
+Program::~Program()
+{
+    // Replace this stub with your own code
 }
 
-void Program::clear() {
-   // Replace this stub with your own code
+void Program::clear()
+{
+    // Replace this stub with your own code
+    linebox.clear();
+    Soureline.clear();
 }
 
-void Program::addSourceLine(int lineNumber, string line) {
-   // Replace this stub with your own code
+void Program::addSourceLine(int lineNumber, string line)
+{
+    // Replace this stub with your own code
+    linebox.push_back(lineNumber);
+    sort(linebox.begin(), linebox.end());
+    Soureline[lineNumber] = line;
 }
 
-void Program::removeSourceLine(int lineNumber) {
-   // Replace this stub with your own code
+void Program::removeSourceLine(int lineNumber)
+{
+    // Replace this stub with your own code
+
+    Soureline.erase(lineNumber);
 }
 
-string Program::getSourceLine(int lineNumber) {
-   return "";    // Replace this stub with your own code
+string Program::getSourceLine(int lineNumber)
+{
+    return Soureline[lineNumber]; // Replace this stub with your own code
 }
 
-void Program::setParsedStatement(int lineNumber, Statement *stmt) {
-   // Replace this stub with your own code
+void Program::setParsedStatement(int lineNumber, Statement *stmt)
+{
+    // Replace this stub with your own code
+    if (Soureline.count(lineNumber) == 0)
+        error("This line don't exist!");
+
+    string line = Soureline[lineNumber];
 }
 
-Statement *Program::getParsedStatement(int lineNumber) {
-   return NULL;  // Replace this stub with your own code
+Statement *Program::getParsedStatement(int lineNumber)
+{
+    return NULL; // Replace this stub with your own code
 }
 
-int Program::getFirstLineNumber() {
-   return 0;     // Replace this stub with your own code
+int Program::getFirstLineNumber()
+{
+    // Replace this stub with your own code
+
+    return Soureline.begin()->first;
 }
 
-int Program::getNextLineNumber(int lineNumber) {
-   return 0;     // Replace this stub with your own code
+int Program::getNextLineNumber(int lineNumber)
+{
+
+    // Replace this stub with your own code
+    auto it = Soureline.lower_bound(lineNumber);
+    if (it == Soureline.end())
+        return -1;
+    else
+        return Soureline.upper_bound(lineNumber)->first;
 }

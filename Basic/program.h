@@ -8,8 +8,11 @@
 #ifndef _program_h
 #define _program_h
 
-#include <string>
 #include "statement.h"
+#include <map>
+#include <string>
+#include <vector>
+#include <algorithm>
 using namespace std;
 
 /*
@@ -25,38 +28,38 @@ using namespace std;
  *    pointer to a Statement.
  */
 
-class Program {
+class Program
+{
 
 public:
-
-/*
+  /*
  * Constructor: Program
  * Usage: Program program;
  * -----------------------
  * Constructs an empty BASIC program.
  */
 
-   Program();
+  Program();
 
-/*
+  /*
  * Destructor: ~Program
  * Usage: usually implicit
  * -----------------------
  * Frees any heap storage associated with the program.
  */
 
-   ~Program();
+  ~Program();
 
-/*
+  /*
  * Method: clear
  * Usage: program.clear();
  * -----------------------
  * Removes all lines from the program.
  */
 
-   void clear();
+  void clear();
 
-/*
+  /*
  * Method: addSourceLine
  * Usage: program.addSourceLine(lineNumber, line);
  * -----------------------------------------------
@@ -67,9 +70,9 @@ public:
  * program in the correct sequence.
  */
 
-   void addSourceLine(int lineNumber, std::string line);
+  void addSourceLine(int lineNumber, std::string line);
 
-/*
+  /*
  * Method: removeSourceLine
  * Usage: program.removeSourceLine(lineNumber);
  * --------------------------------------------
@@ -79,9 +82,9 @@ public:
  * performing any action.
  */
 
-   void removeSourceLine(int lineNumber);
+  void removeSourceLine(int lineNumber);
 
-/*
+  /*
  * Method: getSourceLine
  * Usage: string line = program.getSourceLine(lineNumber);
  * -------------------------------------------------------
@@ -89,9 +92,9 @@ public:
  * If no such line exists, this method returns the empty string.
  */
 
-   std::string getSourceLine(int lineNumber);
+  std::string getSourceLine(int lineNumber);
 
-/*
+  /*
  * Method: setParsedStatement
  * Usage: program.setParsedStatement(lineNumber, stmt);
  * ----------------------------------------------------
@@ -101,9 +104,9 @@ public:
  * exists, the memory for that statement is reclaimed.
  */
 
-   void setParsedStatement(int lineNumber, Statement *stmt);
+  void setParsedStatement(int lineNumber, Statement *stmt);
 
-/*
+  /*
  * Method: getParsedStatement
  * Usage: Statement *stmt = program.getParsedStatement(lineNumber);
  * ----------------------------------------------------------------
@@ -112,9 +115,9 @@ public:
  * returns NULL.
  */
 
-   Statement *getParsedStatement(int lineNumber);
+  Statement *getParsedStatement(int lineNumber);
 
-/*
+  /*
  * Method: getFirstLineNumber
  * Usage: int lineNumber = program.getFirstLineNumber();
  * -----------------------------------------------------
@@ -122,9 +125,9 @@ public:
  * If the program has no lines, this method returns -1.
  */
 
-   int getFirstLineNumber();
+  int getFirstLineNumber();
 
-/*
+  /*
  * Method: getNextLineNumber
  * Usage: int nextLine = program.getNextLineNumber(lineNumber);
  * ------------------------------------------------------------
@@ -133,12 +136,13 @@ public:
  * in the program.  If no more lines remain, this method returns -1.
  */
 
-   int getNextLineNumber(int lineNumber);
+  int getNextLineNumber(int lineNumber);
 
 private:
+  // Fill this in with whatever types and instance variables you need
 
-// Fill this in with whatever types and instance variables you need
-
+  map<int, string> Soureline;
+  vector<int> linebox;
 };
 
 #endif

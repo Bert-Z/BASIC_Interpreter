@@ -7,8 +7,10 @@
 #ifndef _parser_h
 #define _parser_h
 
-#include <string>
 #include "exp.h"
+#include "program.h"
+#include "statement.h"
+#include <string>
 
 #include "../StanfordCPPLib/tokenscanner.h"
 
@@ -21,7 +23,7 @@
  * whitespace and to scan numbers.
  */
 
-Expression *parseExp(TokenScanner & scanner);
+Expression *parseExp(TokenScanner &scanner);
 
 /*
  * Function: readE
@@ -32,7 +34,7 @@ Expression *parseExp(TokenScanner & scanner);
  * defaults to 0, which means that the function reads the entire expression.
  */
 
-Expression *readE(TokenScanner & scanner, int prec = 0);
+Expression *readE(TokenScanner &scanner, int prec = 0);
 
 /*
  * Function: readT
@@ -42,7 +44,7 @@ Expression *readE(TokenScanner & scanner, int prec = 0);
  * identifier, or a parenthesized subexpression.
  */
 
-Expression *readT(TokenScanner & scanner);
+Expression *readT(TokenScanner &scanner);
 
 /*
  * Function: precedence
@@ -53,5 +55,7 @@ Expression *readT(TokenScanner & scanner);
  */
 
 int precedence(std::string token);
+
+void parseProgram(string line, TokenScanner &scanner, Program &program);
 
 #endif

@@ -97,17 +97,13 @@ public:
   ~CStatement();
   virtual void execute(EvalState &state);
 
-  Expression *getLEXP();
-  Expression *getREXP();
-  string getCMP();
-  bool compare();
   int getLinenum();
   string getCstype();
 
 private:
   string line;
   string cstype;
-
+  int linenum;
 };
 
 #endif

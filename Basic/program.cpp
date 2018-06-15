@@ -69,6 +69,7 @@ Statement *Program::getParsedStatement(int lineNumber)
     else if (token == "GOTO" || token == "IF")
     {
         CStatement *stmt = new CStatement(token, line);
+        thislineNumber = stmt->getLinenum();
         return stmt;
     }
     else

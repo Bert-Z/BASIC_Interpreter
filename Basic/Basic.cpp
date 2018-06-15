@@ -97,7 +97,7 @@ int main()
 int processLine(int linenum, Program &program, EvalState &state)
 {
     string line = program.getSourceLine(linenum);
-
+    program.thislineNumber = linenum;
     // TokenScanner scanner;
     // scanner.ignoreWhitespace();
     // scanner.scanNumbers();
@@ -112,7 +112,10 @@ int processLine(int linenum, Program &program, EvalState &state)
     // cout << value << endl;
     // delete exp;
 
-    return program.getNextLineNumber(linenum);
+    if (program.thislineNumber == linenum)
+        return program.getNextLineNumber(linenum);
+    else
+        return program.thislineNumber;
 }
 
 void processProgram(Program &program, EvalState &state)
@@ -120,7 +123,7 @@ void processProgram(Program &program, EvalState &state)
     int First = program.getFirstLineNumber();
 
     int thisnum = processLine(First, program, state);
-    while (thisnum != First && !state.containsKey("END"))
+    while (thisnum != First && !state.isDefined("END"))
     {
         thisnum = processLine(thisnum, program, state);
     }

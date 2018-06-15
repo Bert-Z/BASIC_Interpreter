@@ -86,6 +86,16 @@ CStatement::CStatement(string cstype, string line)
     this->cstype = cstype;
 }
 
+string CStatement::getCstype()
+{
+    return cstype;
+}
+
+int CStatement::getLinenum()
+{
+    return linenum;
+}
+
 void CStatement::execute(EvalState &state)
 {
     TokenScanner scanner;
@@ -104,7 +114,7 @@ void CStatement::execute(EvalState &state)
                 error("SYNTAX ERROR");
         }
 
-        string linenum = scanner.nextToken();
+        linenum = stringToInteger(token);
         return;
     }
     if (cstype == "IF")
@@ -118,12 +128,12 @@ void CStatement::execute(EvalState &state)
         string then = scanner.nextToken();
         if (then != "THEN")
             error("SYNTAX ERROR");
-            
+
         if (cmp == ">")
         {
             if (lval > rval)
             {
-                string linenum = scanner.nextToken();
+                linenum = stringToInteger(scanner.nextToken());
             }
             else
                 return;
@@ -132,7 +142,7 @@ void CStatement::execute(EvalState &state)
         {
             if (lval < rval)
             {
-                string linenum = scanner.nextToken();
+                linenum = stringToInteger(scanner.nextToken());
             }
             else
                 return;
@@ -141,7 +151,7 @@ void CStatement::execute(EvalState &state)
         {
             if (lval >= rval)
             {
-                string linenum = scanner.nextToken();
+                linenum = stringToInteger(scanner.nextToken());
             }
             else
                 return;
@@ -150,7 +160,7 @@ void CStatement::execute(EvalState &state)
         {
             if (lval <= rval)
             {
-                string linenum = scanner.nextToken();
+                linenum = stringToInteger(scanner.nextToken());
             }
             else
                 return;
@@ -159,7 +169,7 @@ void CStatement::execute(EvalState &state)
         {
             if (lval == rval)
             {
-                string linenum = scanner.nextToken();
+                linenum = stringToInteger(scanner.nextToken());
             }
             else
                 return;
@@ -168,7 +178,7 @@ void CStatement::execute(EvalState &state)
         {
             if (lval != rval)
             {
-                string linenum = scanner.nextToken();
+                linenum = stringToInteger(scanner.nextToken());
             }
             else
                 return;

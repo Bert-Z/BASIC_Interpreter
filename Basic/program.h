@@ -9,9 +9,9 @@
 #define _program_h
 
 #include "statement.h"
+#include <algorithm>
 #include <map>
 #include <string>
-#include <algorithm>
 using namespace std;
 
 /*
@@ -137,11 +137,12 @@ public:
 
   int getNextLineNumber(int lineNumber);
 
+  int thislineNumber = 0;
+
 private:
   // Fill this in with whatever types and instance variables you need
 
   map<int, string> Soureline;
-  
 };
 
 #endif

@@ -105,22 +105,16 @@ int precedence(string token)
 void parseProgram(string line, TokenScanner &scanner, Program &program)
 {
     string token = scanner.nextToken();
-    TokenType type = scanner.getTokenType(token);
-    if (type == NUMBER)
+    int linenumber = stringToInteger(token);
+
+    line.erase(0, token.size());
+    if (line == "")
     {
-        int linenumber = stringToInteger(token);
-        line.erase(0, token.size());
-        if (line == "")
-        {
-            program.removeSourceLine(linenumber);
-        }
-        else
-        {
-            program.addSourceLine(linenumber, line);
-        }
+        program.removeSourceLine(linenumber);
     }
     else
     {
-        cout << "SYNTAX ERROR" << endl;
+        program.addSourceLine(linenumber, line);
     }
+
 }

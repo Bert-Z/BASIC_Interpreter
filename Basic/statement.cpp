@@ -23,9 +23,10 @@ Statement::~Statement()
     /* Empty */
 }
 
-SStatement::SStatement(string sstype)
+SStatement::SStatement(string sstype, string line)
 {
     this->sstype = sstype;
+    this->line = line;
 }
 
 string SStatement::getSstype()
@@ -33,42 +34,147 @@ string SStatement::getSstype()
     return sstype;
 }
 
-string SStatement::getVar()
-{
-    return variable;
-}
-
-Expression *SStatement::getNEXP()
-{
-    return nexp;
-}
-
 void SStatement::execute(EvalState &state)
 {
+    TokenScanner scanner;
+    scanner.ignoreWhitespace();
+    scanner.scanNumbers();
+    scanner.setInput(line);
+    string gettype = scanner.nextToken();
+
     if (sstype == "REM")
         return;
     if (sstype == "LET")
     {
-        int var = nexp->eval(state);
-        varmap[variable] = var;
+        Expression *exp = parseExp(scanner);
+        delete exp;
+
         return;
     }
     if (sstype == "PRINT")
     {
-        cout << varmap[variable] << endl;
+        Expression *exp = parseExp(scanner);
+        int value = exp->eval(state);
+        cout << value << endl;
+        delete exp;
+
         return;
     }
     if (sstype == "INPUT")
     {
+        string token = scanner.nextToken();
+
         cout << "?";
         int inputvar;
         cin >> inputvar;
-        varmap[variable] = inputvar;
+        state.setValue(token, inputvar);
+
         return;
     }
     if (sstype == "END")
     {
-        
+        state.setValue("END", 1);
+        return;
+    }
+    error("SYNTAX ERROR");
+    return;
+}
+
+CStatement::CStatement(string cstype, string line)
+{
+    this->line = line;
+    this->cstype = cstype;
+}
+
+void CStatement::execute(EvalState &state)
+{
+    TokenScanner scanner;
+    scanner.ignoreWhitespace();
+    scanner.scanNumbers();
+    scanner.setInput(line);
+    string gettype = scanner.nextToken();
+
+    if (cstype == "GOTO")
+    {
+        string token = scanner.nextToken();
+
+        for (auto it : token)
+        {
+            if (!isdigit(it))
+                error("SYNTAX ERROR");
+        }
+
+        string linenum = scanner.nextToken();
+        return;
+    }
+    if (cstype == "IF")
+    {
+        Expression *lexp = parseExp(scanner);
+        int lval = lexp->eval(state);
+        string cmp = scanner.nextToken();
+        Expression *rexp = parseExp(scanner);
+        int rval = rexp->eval(state);
+
+        string then = scanner.nextToken();
+        if (then != "THEN")
+            error("SYNTAX ERROR");
+            
+        if (cmp == ">")
+        {
+            if (lval > rval)
+            {
+                string linenum = scanner.nextToken();
+            }
+            else
+                return;
+        }
+        if (cmp == "<")
+        {
+            if (lval < rval)
+            {
+                string linenum = scanner.nextToken();
+            }
+            else
+                return;
+        }
+        if (cmp == ">=")
+        {
+            if (lval >= rval)
+            {
+                string linenum = scanner.nextToken();
+            }
+            else
+                return;
+        }
+        if (cmp == "<=")
+        {
+            if (lval <= rval)
+            {
+                string linenum = scanner.nextToken();
+            }
+            else
+                return;
+        }
+        if (cmp == "==")
+        {
+            if (lval == rval)
+            {
+                string linenum = scanner.nextToken();
+            }
+            else
+                return;
+        }
+        if (cmp == "!=")
+        {
+            if (lval != rval)
+            {
+                string linenum = scanner.nextToken();
+            }
+            else
+                return;
+        }
+
+        return;
     }
     error("SYNTAX ERROR");
     return;

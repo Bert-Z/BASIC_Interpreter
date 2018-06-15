@@ -12,8 +12,10 @@
 #ifndef _statement_h
 #define _statement_h
 
+#include "../StanfordCPPLib/tokenscanner.h"
 #include "evalstate.h"
 #include "exp.h"
+#include "parser.h"
 
 /*
  * Class: Statement
@@ -77,24 +79,21 @@ public:
 class SStatement : public Statement
 {
 public:
-  SStatement(string sstype);
+  SStatement(string sstype, string line);
   ~SStatement();
   virtual void execute(EvalState &state);
 
   string getSstype();
-  string getVar();
-  Expression *getNEXP();
 
 private:
+  string line;
   string sstype;
-  string variable;
-  Expression *nexp;
 };
 
 class CStatement : public Statement
 {
 public:
-  CStatement();
+  CStatement(string cstype, string line);
   ~CStatement();
   virtual void execute(EvalState &state);
 
@@ -106,11 +105,9 @@ public:
   string getCstype();
 
 private:
+  string line;
   string cstype;
-  int lineNumber;
-  string cmp;
-  Expression *lexp;
-  Expression *rexp;
+
 };
 
 #endif

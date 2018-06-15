@@ -11,7 +11,6 @@
 #include "statement.h"
 #include <map>
 #include <string>
-#include <vector>
 #include <algorithm>
 using namespace std;
 
@@ -142,7 +141,7 @@ private:
   // Fill this in with whatever types and instance variables you need
 
   map<int, string> Soureline;
-  vector<int> linebox;
+  
 };
 
 #endif

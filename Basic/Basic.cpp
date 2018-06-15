@@ -43,35 +43,35 @@ int main()
         {
             string line;
             getline(cin, line);
-            while (line != "RUN" && line != "QUIT" && line != "CLEAR" && line != "LIST" && line != "HELP")
+            while (isdigit(line[0]))
             {
                 lines.push_back(line);
+                getProgram(line, program);
+
                 getline(cin, line);
-            }
-            for (auto it : lines)
-            {
-                getProgram(it, program);
             }
 
             if (line == "QUIT")
                 return 0;
-            if (line == "CLEAR")
+            else if (line == "CLEAR")
             {
                 lines.clear();
                 program.clear();
             }
-            if (line == "LIST")
+            else if (line == "LIST")
             {
                 LISTfunc(program);
             }
-            if (line == "HELP")
+            else if (line == "HELP")
             {
                 cout << "Yet another basic interpreter." << endl;
             }
-            if (line == "RUN")
+            else if (line == "RUN")
             {
                 processProgram(program, state);
             }
+            else
+                error("SYNTAX ERROR");
         }
         catch (ErrorException &ex)
         {
@@ -120,7 +120,7 @@ void processProgram(Program &program, EvalState &state)
     int First = program.getFirstLineNumber();
 
     int thisnum = processLine(First, program, state);
-    while (thisnum != First)
+    while (thisnum != First && !state.containsKey("END"))
     {
         thisnum = processLine(thisnum, program, state);
     }
@@ -128,6 +128,8 @@ void processProgram(Program &program, EvalState &state)
 
 void LISTfunc(Program &program)
 {
+    if (lines.size() == 0)
+        return;
     int First = program.getFirstLineNumber();
     cout << First << " " << program.getSourceLine(First) << endl;
 

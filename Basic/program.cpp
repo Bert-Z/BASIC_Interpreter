@@ -9,50 +9,42 @@
  */
 
 #include "program.h"
+#include "../StanfordCPPLib/tokenscanner.h"
 #include "statement.h"
 #include <string>
 using namespace std;
 
 Program::Program()
 {
-    // Replace this stub with your own code
+    /*empty*/
 }
 
 Program::~Program()
 {
-    // Replace this stub with your own code
 }
 
 void Program::clear()
 {
-    // Replace this stub with your own code
-    linebox.clear();
     Soureline.clear();
 }
 
 void Program::addSourceLine(int lineNumber, string line)
 {
-    // Replace this stub with your own code
-    linebox.push_back(lineNumber);
-    sort(linebox.begin(), linebox.end());
     Soureline[lineNumber] = line;
 }
 
 void Program::removeSourceLine(int lineNumber)
 {
-    // Replace this stub with your own code
-
     Soureline.erase(lineNumber);
 }
 
 string Program::getSourceLine(int lineNumber)
 {
-    return Soureline[lineNumber]; // Replace this stub with your own code
+    return Soureline[lineNumber];
 }
 
 void Program::setParsedStatement(int lineNumber, Statement *stmt)
 {
-    // Replace this stub with your own code
     if (Soureline.count(lineNumber) == 0)
         error("This line don't exist!");
 
@@ -61,19 +53,35 @@ void Program::setParsedStatement(int lineNumber, Statement *stmt)
 
 Statement *Program::getParsedStatement(int lineNumber)
 {
-    return NULL; // Replace this stub with your own code
+    string line = getSourceLine(lineNumber);
+
+    TokenScanner scanner;
+    scanner.ignoreWhitespace();
+    scanner.scanNumbers();
+    scanner.setInput(line);
+
+    string token = scanner.nextToken();
+    if (token == "REM" || token == "LET" || token == "PRINT" || token == "INPUT" || token == "END")
+    {
+        SStatement *stmt = new SStatement(token, line);
+        return stmt;
+    }
+    else if (token == "GOTO" || token == "IF")
+    {
+        CStatement *stmt = new CStatement(token, line);
+        return stmt;
+    }
+    else
+        error("SYNTAX ERROR");
 }
 
 int Program::getFirstLineNumber()
 {
-    // Replace this stub with your own code
-
     return Soureline.begin()->first;
 }
 
 int Program::getNextLineNumber(int lineNumber)
 {
-    // Replace this stub with your own code
     int nextnum = Soureline.upper_bound(lineNumber)->first;
 
     if (nextnum != Soureline.end()->first)

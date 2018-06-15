@@ -32,20 +32,24 @@ void processLine(string line, Program & program, EvalState & state);
 int main() {
    EvalState state;
    Program program;
+   bool flag=false;
    cout << "Stub implementation of BASIC" << endl;
    while (true) {
       try {
           string line;
           getline(cin,line);
-          while(line!="QUIT"){
+          while(line!="RUN"){
               lines.push_back(line);
+
+              if(line=="QUIT"){flag=true;break;}
 
               getline(cin,line);
           }
+          if(flag) return 0;
           for(auto it :lines){
             processLine(it, program, state);
           }
-
+          
       } catch (ErrorException & ex) {
          cerr << "Error: " << ex.getMessage() << endl;
       }
@@ -67,6 +71,10 @@ int main() {
  */
 
 void processLine(string line, Program & program, EvalState & state) {
+
+
+
+
    TokenScanner scanner;
    scanner.ignoreWhitespace();
    scanner.scanNumbers();

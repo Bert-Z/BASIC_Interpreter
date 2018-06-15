@@ -25,8 +25,10 @@ using namespace std;
 /* Function prototypes */
 
 vector<string> lines;
-void processLine(string line, Program &program, EvalState &state);
+int processLine(int linenum, Program &program, EvalState &state);
 void getProgram(string line, Program &program);
+void LISTfunc(Program &program);
+void processProgram(Program &program, EvalState &state);
 /* Main program */
 
 int main()
@@ -51,7 +53,6 @@ int main()
                 getProgram(it, program);
             }
 
-
             if (line == "QUIT")
                 return 0;
             if (line == "CLEAR")
@@ -61,23 +62,16 @@ int main()
             }
             if (line == "LIST")
             {
-                int First = program.getFirstLineNumber();
-                cout << First << " " << program.getSourceLine(First) << endl;
-                int thisnum = program.getNextLineNumber(First);
-                while (thisnum != First)
-                {
-                    cout << thisnum << " " << program.getSourceLine(thisnum) << endl;
-
-                    thisnum = program.getNextLineNumber(thisnum);
-                }
+                LISTfunc(program);
             }
             if (line == "HELP")
             {
                 cout << "Yet another basic interpreter." << endl;
             }
-            // if (line == "RUN")
-            // {
-            // }
+            if (line == "RUN")
+            {
+                processProgram(program, state);
+            }
         }
         catch (ErrorException &ex)
         {
@@ -100,17 +94,50 @@ int main()
  * or one of the BASIC commands, such as LIST or RUN.
  */
 
-void processLine(string line, Program &program, EvalState &state)
+int processLine(int linenum, Program &program, EvalState &state)
 {
-    TokenScanner scanner;
-    scanner.ignoreWhitespace();
-    scanner.scanNumbers();
-    scanner.setInput(line);
+    string line = program.getSourceLine(linenum);
 
-    Expression *exp = parseExp(scanner);
-    int value = exp->eval(state);
-    cout << value << endl;
-    delete exp;
+    // TokenScanner scanner;
+    // scanner.ignoreWhitespace();
+    // scanner.scanNumbers();
+    // scanner.setInput(line);
+
+    Statement *stm = program.getParsedStatement(linenum);
+    stm->execute(state);
+    delete stm;
+
+    // Expression *exp = parseExp(scanner);
+    // int value = exp->eval(state);
+    // cout << value << endl;
+    // delete exp;
+
+    return program.getNextLineNumber(linenum);
+}
+
+void processProgram(Program &program, EvalState &state)
+{
+    int First = program.getFirstLineNumber();
+
+    int thisnum = processLine(First, program, state);
+    while (thisnum != First)
+    {
+        thisnum = processLine(thisnum, program, state);
+    }
+}
+
+void LISTfunc(Program &program)
+{
+    int First = program.getFirstLineNumber();
+    cout << First << " " << program.getSourceLine(First) << endl;
+
+    int thisnum = program.getNextLineNumber(First);
+    while (thisnum != First)
+    {
+        cout << thisnum << " " << program.getSourceLine(thisnum) << endl;
+
+        thisnum = program.getNextLineNumber(thisnum);
+    }
 }
 
 void getProgram(string line, Program &program)

@@ -11,6 +11,7 @@
 #include <cctype>
 #include <iostream>
 #include <string>
+#include <vector>
 #include "exp.h"
 #include "parser.h"
 #include "program.h"
@@ -23,6 +24,7 @@ using namespace std;
 
 /* Function prototypes */
 
+vector<string> lines;
 void processLine(string line, Program & program, EvalState & state);
 
 /* Main program */
@@ -33,7 +35,17 @@ int main() {
    cout << "Stub implementation of BASIC" << endl;
    while (true) {
       try {
-         processLine(getLine(), program, state);
+          string line;
+          getline(cin,line);
+          while(line!="QUIT"){
+              lines.push_back(line);
+
+              getline(cin,line);
+          }
+          for(auto it :lines){
+            processLine(it, program, state);
+          }
+
       } catch (ErrorException & ex) {
          cerr << "Error: " << ex.getMessage() << endl;
       }

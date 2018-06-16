@@ -27,6 +27,7 @@ using namespace std;
 vector<string> lines;
 int processLine(int linenum, Program &program, EvalState &state);
 void getProgram(string line, Program &program);
+int anotherget(int count, string line, Program &program);
 void LISTfunc(Program &program);
 void processProgram(Program &program, EvalState &state);
 /* Main program */
@@ -35,6 +36,8 @@ int main()
 {
     EvalState state;
     Program program;
+    Program program2;
+    int program2count = 1;
 
     while (true)
     {
@@ -42,12 +45,21 @@ int main()
         {
             string line;
             getline(cin, line);
-            while (isdigit(line[0]))
+            while (line != "QUIT" && line != "CLEAR" && line != "LIST" && line != "HELP" && line != "RUN")
             {
                 lines.push_back(line);
-                getProgram(line, program);
+
+                if (isdigit(line[0]))
+                    getProgram(line, program);
+                else
+                    program2count = anotherget(program2count, line, program2);
 
                 getline(cin, line);
+            }
+            
+            if (program2.getFirstLineNumber() == 1)
+            {
+                processProgram(program2, state);
             }
 
             if (line == "QUIT")
@@ -133,7 +145,7 @@ void LISTfunc(Program &program)
     if (lines.size() == 0)
         return;
     int First = program.getFirstLineNumber();
-    cout << First  << program.getSourceLine(First) << endl;
+    cout << First << program.getSourceLine(First) << endl;
 
     int thisnum = program.getNextLineNumber(First);
     while (thisnum != First)
@@ -142,6 +154,21 @@ void LISTfunc(Program &program)
 
         thisnum = program.getNextLineNumber(thisnum);
     }
+}
+
+int anotherget(int count, string line, Program &program)
+{
+    string newcount = integerToString(count);
+    count++;
+    string newline = newcount + string(" ") + line;
+
+    TokenScanner scanner;
+    scanner.ignoreWhitespace();
+    scanner.scanNumbers();
+    scanner.setInput(newline);
+    parseProgram(newline, scanner, program);
+
+    return count;
 }
 
 void getProgram(string line, Program &program)

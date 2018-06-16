@@ -3,7 +3,7 @@
 
 PROGRAM = Basic
 
-CXX = g++
+CXX = clang++
 CXXFLAGS = -IStanfordCPPLib -fvisibility-inlines-hidden -g
 
 CPP_FILES = $(wildcard *.cpp)

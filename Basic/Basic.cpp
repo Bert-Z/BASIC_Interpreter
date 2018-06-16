@@ -36,7 +36,6 @@ int main()
     EvalState state;
     Program program;
 
-    cout << "Stub implementation of BASIC" << endl;
     while (true)
     {
         try
@@ -75,7 +74,7 @@ int main()
         }
         catch (ErrorException &ex)
         {
-            cerr << "Error: " << ex.getMessage() << endl;
+            cerr << ex.getMessage() << endl;
         }
     }
     return 0;
@@ -134,12 +133,12 @@ void LISTfunc(Program &program)
     if (lines.size() == 0)
         return;
     int First = program.getFirstLineNumber();
-    cout << First << " " << program.getSourceLine(First) << endl;
+    cout << First  << program.getSourceLine(First) << endl;
 
     int thisnum = program.getNextLineNumber(First);
     while (thisnum != First)
     {
-        cout << thisnum << " " << program.getSourceLine(thisnum) << endl;
+        cout << thisnum << program.getSourceLine(thisnum) << endl;
 
         thisnum = program.getNextLineNumber(thisnum);
     }

@@ -8,6 +8,7 @@
  */
 
 #include "statement.h"
+#include "parser.h"
 #include <string>
 using namespace std;
 
@@ -29,6 +30,8 @@ SStatement::SStatement(string sstype, string line)
     this->line = line;
 }
 
+SStatement::~SStatement(){};
+
 string SStatement::getSstype()
 {
     return sstype;
@@ -47,6 +50,7 @@ void SStatement::execute(EvalState &state)
     if (sstype == "LET")
     {
         Expression *exp = parseExp(scanner);
+        int val = exp->eval(state);
         delete exp;
 
         return;
@@ -64,7 +68,7 @@ void SStatement::execute(EvalState &state)
     {
         string token = scanner.nextToken();
 
-        cout << "?";
+        cout << " ? ";
         int inputvar;
         cin >> inputvar;
         state.setValue(token, inputvar);
@@ -85,6 +89,8 @@ CStatement::CStatement(string cstype, string line)
     this->line = line;
     this->cstype = cstype;
 }
+
+CStatement::~CStatement(){};
 
 string CStatement::getCstype()
 {

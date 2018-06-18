@@ -78,7 +78,7 @@ IdentifierExp::IdentifierExp(string name)
 int IdentifierExp::eval(EvalState &state)
 {
     if (!state.isDefined(name))
-        error(name + " is undefined");
+        error("VARIABLE NOT DEFINED");
     return state.getValue(name);
 }
 
@@ -132,14 +132,14 @@ int CompoundExp::eval(EvalState &state)
     {
         if (lhs->getType() != IDENTIFIER)
         {
-            error("Illegal variable in assignment");
+            error("SYNTAX ERROR2");
         }
         int val = rhs->eval(state);
         string name = ((IdentifierExp *)lhs)->getName();
 
         if (name == "REM" || name == "LET" || name == "PRINT" || name == "INPUT" || name == "GOTO" || name == "IF" || name == "THEN" || name == "RUN" || name == "LIST" || name == "CLEAR" || name == "QUIT" || name == "HELP" || name == "END")
             error("SYNTAX ERROR");
-            
+
         state.setValue(name, val);
         return val;
     }
@@ -152,8 +152,14 @@ int CompoundExp::eval(EvalState &state)
     if (op == "*")
         return left * right;
     if (op == "/")
-        return left / right;
-    error("Illegal operator in expression");
+    {
+        if (right == 0)
+            error("DIVIDE BY ZERO");
+        else
+            return left / right;
+    }
+
+    error("SYNTAX ERROR4");
     return 0;
 }
 

@@ -71,6 +71,7 @@ void SStatement::execute(EvalState &state)
         cout << " ? ";
         int inputvar;
         cin >> inputvar;
+
         state.setValue(token, inputvar);
 
         return;
@@ -80,7 +81,7 @@ void SStatement::execute(EvalState &state)
         state.setValue("END", 1);
         return;
     }
-    error("SYNTAX ERROR");
+    error("SYNTAX ERROR7");
     return;
 }
 
@@ -108,6 +109,7 @@ void CStatement::execute(EvalState &state)
     scanner.ignoreWhitespace();
     scanner.scanNumbers();
     scanner.setInput(line);
+    // cout << line << endl;
     string gettype = scanner.nextToken();
 
     if (cstype == "GOTO")
@@ -117,7 +119,7 @@ void CStatement::execute(EvalState &state)
         for (auto it : token)
         {
             if (!isdigit(it))
-                error("SYNTAX ERROR");
+                error("SYNTAX ERROR6");
         }
 
         linenum = stringToInteger(token);
@@ -125,21 +127,58 @@ void CStatement::execute(EvalState &state)
     }
     if (cstype == "IF")
     {
-        Expression *lexp = parseExp(scanner);
+        string lefte, cmp, righte, then;
+
+        size_t f1 = line.find('=');
+        size_t f2 = line.find('>');
+        size_t f3 = line.find('<');
+        size_t f4 = line.find("THEN");
+        if (f1 != string::npos)
+        {
+            cmp = "=";
+            lefte = line.substr(4, f1 - 4);
+            righte = line.substr(f1 + 1, f4 - f1 - 1);
+        }
+        if (f2 != string::npos)
+        {
+            cmp = ">";
+            lefte = line.substr(4, f2 - 4);
+            righte = line.substr(f2 + 1, f4 - f2 - 1);
+        }
+        if (f3 != string::npos)
+        {
+            cmp = "<";
+            lefte = line.substr(4, f3 - 4);
+            righte = line.substr(f3 + 1, f4 - f3 - 1);
+        }
+
+        TokenScanner scanner1;
+        scanner1.ignoreWhitespace();
+        scanner1.scanNumbers();
+        scanner1.setInput(lefte);
+        Expression *lexp = parseExp(scanner1);
         int lval = lexp->eval(state);
-        string cmp = scanner.nextToken();
-        Expression *rexp = parseExp(scanner);
+
+        TokenScanner scanner2;
+        scanner2.ignoreWhitespace();
+        scanner2.scanNumbers();
+        scanner2.setInput(righte);
+        Expression *rexp = parseExp(scanner2);
         int rval = rexp->eval(state);
 
-        string then = scanner.nextToken();
-        if (then != "THEN")
-            error("SYNTAX ERROR");
+        // string cmp = scanner.nextToken();
+
+        // string then = scanner.nextToken();
+        if (f4 != string::npos)
+        {
+            then = line.substr(f4 + 4);
+        }
 
         if (cmp == ">")
         {
             if (lval > rval)
             {
-                linenum = stringToInteger(scanner.nextToken());
+                linenum = stringToInteger(then);
             }
             else
                 return;
@@ -148,43 +187,16 @@ void CStatement::execute(EvalState &state)
         {
             if (lval < rval)
             {
-                linenum = stringToInteger(scanner.nextToken());
+                linenum = stringToInteger(then);
             }
             else
                 return;
         }
-        if (cmp == ">=")
-        {
-            if (lval >= rval)
-            {
-                linenum = stringToInteger(scanner.nextToken());
-            }
-            else
-                return;
-        }
-        if (cmp == "<=")
-        {
-            if (lval <= rval)
-            {
-                linenum = stringToInteger(scanner.nextToken());
-            }
-            else
-                return;
-        }
-        if (cmp == "==")
+        if (cmp == "=")
         {
             if (lval == rval)
             {
-                linenum = stringToInteger(scanner.nextToken());
-            }
-            else
-                return;
-        }
-        if (cmp == "!=")
-        {
-            if (lval != rval)
-            {
-                linenum = stringToInteger(scanner.nextToken());
+                linenum = stringToInteger(then);
             }
             else
                 return;
@@ -192,6 +204,6 @@ void CStatement::execute(EvalState &state)
 
         return;
     }
-    error("SYNTAX ERROR");
+    // error("SYNTAX ERROR12");
     return;
 }

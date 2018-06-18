@@ -73,7 +73,9 @@ public:
 
    bool isDefined(std::string var);
 
-private:
+   void clear();
+
+ private:
 
    Map<std::string,int> symbolTable;
 

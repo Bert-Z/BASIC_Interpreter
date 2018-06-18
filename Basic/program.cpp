@@ -46,12 +46,12 @@ string Program::getSourceLine(int lineNumber)
 void Program::setParsedStatement(int lineNumber, Statement *stmt)
 {
     if (Soureline.count(lineNumber) == 0)
-        error("This line don't exist!");
+        error("LINE NUMBER ERROR");
 
     string line = Soureline[lineNumber];
 }
 
-Statement *Program::getParsedStatement(int lineNumber)
+Statement *Program::getParsedStatement(EvalState &state, int lineNumber)
 {
     string line = getSourceLine(lineNumber);
 
@@ -61,15 +61,20 @@ Statement *Program::getParsedStatement(int lineNumber)
     scanner.setInput(line);
 
     string token = scanner.nextToken();
+    // cout << token << endl;
+
     if (token == "REM" || token == "LET" || token == "PRINT" || token == "INPUT" || token == "END")
     {
         SStatement *stmt = new SStatement(token, line);
+
         return stmt;
     }
     else if (token == "GOTO" || token == "IF")
     {
         CStatement *stmt = new CStatement(token, line);
+        stmt->execute(state);
         thislineNumber = stmt->getLinenum();
+
         return stmt;
     }
     else

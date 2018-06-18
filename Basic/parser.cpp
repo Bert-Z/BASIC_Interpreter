@@ -75,11 +75,11 @@ Expression *readT(TokenScanner &scanner)
     if (type == NUMBER)
         return new ConstantExp(stringToInteger(token));
     if (token != "(")
-        error("Illegal term in expression");
+        error("SYNTAX ERROR");
     Expression *exp = readE(scanner);
     if (scanner.nextToken() != ")")
     {
-        error("Unbalanced parentheses in expression");
+        error("SYNTAX ERROR");
     }
     return exp;
 }
@@ -116,5 +116,4 @@ void parseProgram(string line, TokenScanner &scanner, Program &program)
     {
         program.addSourceLine(linenumber, line);
     }
-
 }

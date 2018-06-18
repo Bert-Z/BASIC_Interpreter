@@ -26,8 +26,8 @@ using namespace std;
 
 vector<string> lines;
 int processLine(int linenum, Program &program, EvalState &state);
+void directPro(string line, EvalState &state);
 void getProgram(string line, Program &program);
-int anotherget(int count, string line, Program &program);
 void LISTfunc(Program &program);
 void processProgram(Program &program, EvalState &state);
 /* Main program */
@@ -36,8 +36,6 @@ int main()
 {
     EvalState state;
     Program program;
-    Program program2;
-    int program2count = 1;
 
     while (true)
     {
@@ -50,16 +48,15 @@ int main()
                 lines.push_back(line);
 
                 if (isdigit(line[0]))
+                {
                     getProgram(line, program);
+                }
                 else
-                    program2count = anotherget(program2count, line, program2);
+                {
+                    directPro(line, state);
+                }
 
                 getline(cin, line);
-            }
-            
-            if (program2.getFirstLineNumber() == 1)
-            {
-                processProgram(program2, state);
             }
 
             if (line == "QUIT")
@@ -68,6 +65,7 @@ int main()
             {
                 lines.clear();
                 program.clear();
+                state.clear();
             }
             else if (line == "LIST")
             {
@@ -82,11 +80,11 @@ int main()
                 processProgram(program, state);
             }
             else
-                error("SYNTAX ERROR");
+                error("SYNTAX ERROR1");
         }
         catch (ErrorException &ex)
         {
-            cerr << ex.getMessage() << endl;
+            cout << ex.getMessage() << endl;
         }
     }
     return 0;
@@ -109,19 +107,10 @@ int processLine(int linenum, Program &program, EvalState &state)
 {
     string line = program.getSourceLine(linenum);
     program.thislineNumber = linenum;
-    // TokenScanner scanner;
-    // scanner.ignoreWhitespace();
-    // scanner.scanNumbers();
-    // scanner.setInput(line);
 
-    Statement *stm = program.getParsedStatement(linenum);
+    Statement *stm = program.getParsedStatement(state, linenum);
     stm->execute(state);
     delete stm;
-
-    // Expression *exp = parseExp(scanner);
-    // int value = exp->eval(state);
-    // cout << value << endl;
-    // delete exp;
 
     if (program.thislineNumber == linenum)
         return program.getNextLineNumber(linenum);
@@ -137,6 +126,10 @@ void processProgram(Program &program, EvalState &state)
     while (thisnum != First && !state.isDefined("END"))
     {
         thisnum = processLine(thisnum, program, state);
+        if (program.Soureline.count(thisnum) == 0)
+        {
+            error("LINE NUMBER ERROR");
+        }
     }
 }
 
@@ -156,21 +149,6 @@ void LISTfunc(Program &program)
     }
 }
 
-int anotherget(int count, string line, Program &program)
-{
-    string newcount = integerToString(count);
-    count++;
-    string newline = newcount + string(" ") + line;
-
-    TokenScanner scanner;
-    scanner.ignoreWhitespace();
-    scanner.scanNumbers();
-    scanner.setInput(newline);
-    parseProgram(newline, scanner, program);
-
-    return count;
-}
-
 void getProgram(string line, Program &program)
 {
     TokenScanner scanner;
@@ -178,4 +156,74 @@ void getProgram(string line, Program &program)
     scanner.scanNumbers();
     scanner.setInput(line);
     parseProgram(line, scanner, program);
+}
+
+void directPro(string line, EvalState &state)
+{
+    TokenScanner scanner;
+    scanner.ignoreWhitespace();
+    scanner.scanNumbers();
+    scanner.setInput(line);
+    string gettype = scanner.nextToken();
+
+    if (gettype == "REM")
+        return;
+    if (gettype == "LET")
+    {
+        Expression *exp = parseExp(scanner);
+        int val = exp->eval(state);
+        delete exp;
+
+        return;
+    }
+    if (gettype == "PRINT")
+    {
+        Expression *exp = parseExp(scanner);
+        int value = exp->eval(state);
+        cout << value << endl;
+        delete exp;
+
+        return;
+    }
+    if (gettype == "INPUT")
+    {
+        string token = scanner.nextToken();
+
+        cout << " ? ";
+        string inputvar;
+        getline(cin, inputvar);
+
+        int check = 0;
+
+        for (int i = 0; i < inputvar.size(); i++)
+        {
+            if (i == 0)
+            {
+                if (inputvar[i] == '+' || inputvar[i] == '-' || isdigit(inputvar[i]))
+                    check++;
+            }
+            else
+            {
+                if (isdigit(inputvar[i]))
+                    check++;
+            }
+        }
+
+        if (check != inputvar.size())
+        {
+            cout << "INVALID NUMBER" << endl;
+            cout << " ? ";
+            getline(cin, inputvar);
+            check = 0;
+        }
+
+        int var = stringToInteger(inputvar);
+
+        state.setValue(token, var);
+
+        return;
+    }
+    // else
+    //     error("SYNTAX ERROR");
+    return;
 }

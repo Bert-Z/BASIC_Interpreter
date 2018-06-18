@@ -114,7 +114,7 @@ public:
  * returns NULL.
  */
 
-  Statement *getParsedStatement(int lineNumber);
+  Statement *getParsedStatement(EvalState &state,int lineNumber);
 
   /*
  * Method: getFirstLineNumber
@@ -138,11 +138,12 @@ public:
   int getNextLineNumber(int lineNumber);
 
   int thislineNumber = 0;
+  map<int, string> Soureline;
 
 private:
   // Fill this in with whatever types and instance variables you need
 
-  map<int, string> Soureline;
+  
 };
 
 #endif

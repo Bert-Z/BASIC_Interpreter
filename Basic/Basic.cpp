@@ -14,6 +14,7 @@
 #include "parser.h"
 #include "program.h"
 #include <cctype>
+#include <fstream>
 #include <iostream>
 #include <string>
 #include <vector>
@@ -41,8 +42,11 @@ int main()
     {
         try
         {
+            // ifstream sin;
+            // sin.open("file.txt");
             string line;
             getline(cin, line);
+            // getline(sin, line);
             while (line != "QUIT" && line != "CLEAR" && line != "LIST" && line != "HELP" && line != "RUN")
             {
                 lines.push_back(line);
@@ -106,7 +110,9 @@ int main()
 int processLine(int linenum, Program &program, EvalState &state)
 {
     string line = program.getSourceLine(linenum);
+    // cout << linenum << "x" << endl;
     program.thislineNumber = linenum;
+    // cout << program.thislineNumber << "y" << endl;
 
     Statement *stm = program.getParsedStatement(state, linenum);
     stm->execute(state);
@@ -123,14 +129,19 @@ void processProgram(Program &program, EvalState &state)
     int First = program.getFirstLineNumber();
 
     int thisnum = processLine(First, program, state);
-    while (thisnum != First && !state.isDefined("END"))
+    while (thisnum != -1 && !state.isDefined("END"))
     {
         thisnum = processLine(thisnum, program, state);
+        if (thisnum == -1)
+        {
+            break;
+        }
         if (program.Soureline.count(thisnum) == 0)
         {
             error("LINE NUMBER ERROR");
         }
     }
+    state.deletestate("END");
 }
 
 void LISTfunc(Program &program)
@@ -141,7 +152,7 @@ void LISTfunc(Program &program)
     cout << First << program.getSourceLine(First) << endl;
 
     int thisnum = program.getNextLineNumber(First);
-    while (thisnum != First)
+    while (thisnum != -1)
     {
         cout << thisnum << program.getSourceLine(thisnum) << endl;
 

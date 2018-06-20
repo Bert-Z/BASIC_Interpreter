@@ -16,7 +16,6 @@
 #include "evalstate.h"
 #include "exp.h"
 
-
 /*
  * Class: Statement
  * ----------------
@@ -93,7 +92,7 @@ private:
 class CStatement : public Statement
 {
 public:
-  CStatement(string cstype, string line);
+  CStatement(string cstype, string line, int num);
   ~CStatement();
   virtual void execute(EvalState &state);
 

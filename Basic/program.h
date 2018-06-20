@@ -137,7 +137,7 @@ public:
 
   int getNextLineNumber(int lineNumber);
 
-  int thislineNumber = 0;
+  int thislineNumber;
   map<int, string> Soureline;
 
 private:

@@ -85,8 +85,9 @@ void SStatement::execute(EvalState &state)
     return;
 }
 
-CStatement::CStatement(string cstype, string line)
+CStatement::CStatement(string cstype, string line, int num)
 {
+    this->linenum = num;
     this->line = line;
     this->cstype = cstype;
 }
@@ -179,27 +180,36 @@ void CStatement::execute(EvalState &state)
             if (lval > rval)
             {
                 linenum = stringToInteger(then);
+                return;
             }
             else
+            {
                 return;
+            }
         }
         if (cmp == "<")
         {
             if (lval < rval)
             {
                 linenum = stringToInteger(then);
+                return;
             }
             else
+            {
                 return;
+            }
         }
         if (cmp == "=")
         {
             if (lval == rval)
             {
                 linenum = stringToInteger(then);
+                return;
             }
             else
+            {
                 return;
+            }
         }
 
         return;

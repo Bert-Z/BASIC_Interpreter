@@ -44,3 +44,7 @@ void EvalState::clear()
 {
     symbolTable.clear();
 }
+void EvalState::deletestate(string var)
+{
+    symbolTable.remove(var);
+}

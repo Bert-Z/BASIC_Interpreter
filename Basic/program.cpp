@@ -71,14 +71,15 @@ Statement *Program::getParsedStatement(EvalState &state, int lineNumber)
     }
     else if (token == "GOTO" || token == "IF")
     {
-        CStatement *stmt = new CStatement(token, line);
+        CStatement *stmt = new CStatement(token, line, lineNumber);
         stmt->execute(state);
         thislineNumber = stmt->getLinenum();
+        // cout << thislineNumber << endl;
 
         return stmt;
     }
     else
-        error("SYNTAX ERROR");
+        error("SYNTAX ERROR55");
 }
 
 int Program::getFirstLineNumber()
@@ -93,5 +94,5 @@ int Program::getNextLineNumber(int lineNumber)
     if (nextnum != Soureline.end()->first)
         return Soureline.upper_bound(lineNumber)->first;
     else
-        return Soureline.begin()->first;
+        return -1;
 }

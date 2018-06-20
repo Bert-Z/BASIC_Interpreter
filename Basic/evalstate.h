@@ -9,8 +9,8 @@
 #ifndef _evalstate_h
 #define _evalstate_h
 
-#include <string>
 #include "../StanfordCPPLib/map.h"
+#include <string>
 
 /*
  * Class: EvalState
@@ -24,61 +24,60 @@
  * additional information in the EvalState class.
  */
 
-class EvalState {
+class EvalState
+{
 
 public:
-
-/*
+  /*
  * Constructor: EvalState
  * Usage: EvalState state;
  * -----------------------
  * Creates a new EvalState object with no variable bindings.
  */
 
-   EvalState();
+  EvalState();
 
-/*
+  /*
  * Destructor: ~EvalState
  * Usage: usually implicit
  * -----------------------
  * Frees all heap storage associated with this object.
  */
 
-   ~EvalState();
+  ~EvalState();
 
-/*
+  /*
  * Method: setValue
  * Usage: state.setValue(var, value);
  * ----------------------------------
  * Sets the value associated with the specified var.
  */
 
-   void setValue(std::string var, int value);
+  void setValue(std::string var, int value);
 
-/*
+  /*
  * Method: getValue
  * Usage: int value = state.getValue(var);
  * ---------------------------------------
  * Returns the value associated with the specified variable.
  */
 
-   int getValue(std::string var);
+  int getValue(std::string var);
 
-/*
+  /*
  * Method: isDefined
  * Usage: if (state.isDefined(var)) . . .
  * --------------------------------------
  * Returns true if the specified variable is defined.
  */
 
-   bool isDefined(std::string var);
+  bool isDefined(std::string var);
 
-   void clear();
+  void clear();
+  void deletestate(string key);
 
- private:
-
-   Map<std::string,int> symbolTable;
-
+private:
+  Map<std::string, int> symbolTable;
 };
 
 #endif
